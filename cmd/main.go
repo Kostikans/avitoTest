@@ -1,6 +1,9 @@
 package cmd
 
-import "log"
+import (
+	"fmt"
+	"log"
+)
 
 func InitDB() *sqlx.DB {
 	connStr := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable",
