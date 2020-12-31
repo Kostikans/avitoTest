@@ -1,10 +1,26 @@
+//go:generate easyjson -all roomModel.go
 package roomModel
 
-import "time"
-
+// easyjson:json
 type Room struct {
-	RoomID      int64     `json:"room_id"`
-	Created     time.Time `json:"create"`
-	Cost        int64     `json:"cost"`
-	Description string    `json:"description"`
+	RoomID      int64  `json:"room_id" db:"room_id"`
+	Created     string `json:"create" db:"created"`
+	Cost        int64  `json:"cost" db:"cost"`
+	Description string `json:"description" db:"description"`
+}
+
+// easyjson:json
+type RoomAdd struct {
+	Cost        int64  `json:"cost"`
+	Description string `json:"description"`
+}
+
+type RoomOrder struct {
+	CostDesc string
+	DataDesc string
+}
+
+// easyjson:json
+type RoomID struct {
+	RoomID int64 `json:"room_id"`
 }

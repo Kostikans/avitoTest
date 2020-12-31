@@ -20,6 +20,16 @@ import (
 	"net/http"
 	"os"
 
+	bookingDelivery "github.com/Kostikans/avitoTest/internal/app/booking/delivery/http"
+	bookingRepository "github.com/Kostikans/avitoTest/internal/app/booking/repository"
+	bookingUsecase "github.com/Kostikans/avitoTest/internal/app/booking/usecase"
+
+	"github.com/joho/godotenv"
+
+	roomDelivery "github.com/Kostikans/avitoTest/internal/app/room/delivery/http"
+	roomRepository "github.com/Kostikans/avitoTest/internal/app/room/repository"
+	roomUsecase "github.com/Kostikans/avitoTest/internal/app/room/usecase"
+
 	"github.com/Kostikans/avitoTest/internal/package/logger"
 
 	apiMiddleware "github.com/Kostikans/avitoTest/internal/app/middleware"
@@ -28,6 +38,7 @@ import (
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/gorilla/mux"
 	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 )
 
 func NewRouter() *mux.Router {
@@ -58,6 +69,12 @@ func InitDB() *sqlx.DB {
 }
 
 func main() {
+
+	err := godotenv.Load("vars.env")
+	if err != nil {
+		log.Fatal(err)
+	}
+	configs.Init()
 	db := InitDB()
 	logOutput, err := os.Create("log.txt")
 	if err != nil {
@@ -73,9 +90,18 @@ func main() {
 	r.Use(apiMiddleware.NewPanicMiddleware())
 	r.Use(apiMiddleware.LoggerMiddleware(log))
 
-	err = http.ListenAndServe(":8080", r)
+	roomRepo := roomRepository.NewRoomRepository(db)
+	bookingRepo := bookingRepository.NewBookingRepository(db)
+
+	roomUse := roomUsecase.NewRoomUsecase(roomRepo)
+	bookingUse := bookingUsecase.NewRoomUsecase(bookingRepo)
+
+	roomDelivery.NewRoomHandler(r, roomUse, log)
+	bookingDelivery.NewBookingHandler(r, bookingUse, log)
+
+	err = http.ListenAndServe(":9000", r)
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Info("Server started at port", ":8080")
+	log.Info("Server started at port", ":9000")
 }

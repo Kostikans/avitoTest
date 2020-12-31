@@ -1,10 +1,10 @@
 package configs
 
 import (
-	"github.com/spf13/viper"
 	"os"
-)
 
+	"github.com/spf13/viper"
+)
 
 type postgresConfig struct {
 	User     string
@@ -16,12 +16,11 @@ var BdConfig postgresConfig
 
 func Init() {
 	BdConfig = postgresConfig{
-		User:     os.Getenv("PostgresUser"),
-		Password: os.Getenv("PostgresPassword"),
-		DBName:   os.Getenv("PostgresDBName"),
+		User:     os.Getenv("PostgresAvitoUser"),
+		Password: os.Getenv("PostgresAvitoPassword"),
+		DBName:   os.Getenv("PostgresAvitoDBName"),
 	}
 }
-
 
 func ExportConfig() error {
 	viper.SetConfigType("yaml")

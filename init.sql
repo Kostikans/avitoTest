@@ -3,7 +3,7 @@ create table rooms
     room_id     serial not null primary key,
     description text,
     cost        int,
-    created     timestamp
+    created     timestamp default now()
 );
 
 create table booking

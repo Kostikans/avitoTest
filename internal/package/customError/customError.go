@@ -1,0 +1,38 @@
+package customError
+
+import (
+	"fmt"
+	"net/http"
+	"runtime"
+	"strconv"
+	"strings"
+)
+
+type CustomError struct {
+	Code int
+	File string
+	Line int
+	Err  error
+}
+
+func NewCustomError(err error, code int, skip int) *CustomError {
+	_, fn, line, _ := runtime.Caller(skip)
+	return &CustomError{Code: code, Line: line, File: fn, Err: err}
+}
+
+//func relative(path string) string {
+//	return strings.TrimPrefix(filepath.ToSlash(path), packageConfig.PrefixPath)
+//}
+
+func ParseCode(err error) int {
+	index := strings.Index(err.Error(), "]")
+	code, err := strconv.Atoi(err.Error()[6:index])
+	if err != nil {
+		return http.StatusInternalServerError
+	}
+	return code
+}
+
+func (e *CustomError) Error() string {
+	return fmt.Sprintf("code:[%d] file:[%s]  line:[%d]  error:[%s]", e.Code, e.File, e.Line, e.Err)
+}
