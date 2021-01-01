@@ -16,8 +16,8 @@ type RoomAdd struct {
 }
 
 type RoomOrder struct {
-	CostDesc string
-	DataDesc string
+	Sort  string
+	Order string
 }
 
 // easyjson:json

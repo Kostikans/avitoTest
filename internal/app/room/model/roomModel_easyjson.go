@@ -36,10 +36,10 @@ func easyjson9b1d4d46DecodeGithubComKostikansAvitoTestInternalAppRoomModel(in *j
 			continue
 		}
 		switch key {
-		case "CostDesc":
-			out.CostDesc = string(in.String())
-		case "DataDesc":
-			out.DataDesc = string(in.String())
+		case "Sort":
+			out.Sort = string(in.String())
+		case "Order":
+			out.Order = string(in.String())
 		default:
 			in.SkipRecursive()
 		}
@@ -55,14 +55,14 @@ func easyjson9b1d4d46EncodeGithubComKostikansAvitoTestInternalAppRoomModel(out *
 	first := true
 	_ = first
 	{
-		const prefix string = ",\"CostDesc\":"
+		const prefix string = ",\"Sort\":"
 		out.RawString(prefix[1:])
-		out.String(string(in.CostDesc))
+		out.String(string(in.Sort))
 	}
 	{
-		const prefix string = ",\"DataDesc\":"
+		const prefix string = ",\"Order\":"
 		out.RawString(prefix)
-		out.String(string(in.DataDesc))
+		out.String(string(in.Order))
 	}
 	out.RawByte('}')
 }

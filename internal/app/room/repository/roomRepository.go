@@ -1,7 +1,8 @@
 package roomRepository
 
 import (
-	"errors"
+	"database/sql"
+	"fmt"
 
 	roomModel "github.com/Kostikans/avitoTest/internal/app/room/model"
 	"github.com/Kostikans/avitoTest/internal/package/clientError"
@@ -37,20 +38,20 @@ func (rRep *RoomRepository) DeleteRoom(roomID int64) error {
 
 func (rRep *RoomRepository) GenerateQueryForGetRooms(order roomModel.RoomOrder) (string, error) {
 	query := GetRoomsPostgreRequest
-	if order.DataDesc != "" && order.CostDesc != "" {
-		return "", errors.New("available only one order option")
-	}
-
-	if order.DataDesc == "true" {
-		query += " ORDER BY created DESC"
-	} else if order.DataDesc == "false" {
-		query += " ORDER BY created ASC"
-	}
-
-	if order.CostDesc == "true" {
-		query += " ORDER BY cost DESC"
-	} else if order.CostDesc == "false" {
-		query += " ORDER BY cost ASC"
+	if order.Sort == "date" {
+		query += " ORDER BY created "
+		if order.Order == "true" {
+			query += "DESC"
+		} else if order.Order == "false" {
+			query += "ASC"
+		}
+	} else if order.Sort == "cost" {
+		query += " ORDER BY cost  "
+		if order.Order == "true" {
+			query += "DESC"
+		} else if order.Order == "false" {
+			query += "ASC"
+		}
 	}
 
 	return query, nil
@@ -68,4 +69,14 @@ func (rRep *RoomRepository) GetRooms(order roomModel.RoomOrder) ([]roomModel.Roo
 	}
 	return rooms, err
 
+}
+
+func (rRep *RoomRepository) CheckRoomExist(roomID int64) (bool, error) {
+	var exists bool
+	query := fmt.Sprintf("SELECT exists (%s)", CheckRoomExistPostgreRequest)
+	err := rRep.db.QueryRow(query, roomID).Scan(&exists)
+	if err != nil && err != sql.ErrNoRows {
+		return exists, customerror.NewCustomError(err, serverError.ServerInternalError, 1)
+	}
+	return exists, nil
 }

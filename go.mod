@@ -3,9 +3,11 @@ module github.com/Kostikans/avitoTest
 go 1.15
 
 require (
+	github.com/asaskevich/govalidator v0.0.0-20200428143746-21a406dcc535
 	github.com/go-openapi/jsonreference v0.19.4 // indirect
 	github.com/go-openapi/runtime v0.19.24
 	github.com/go-park-mail-ru/2020_2_JMickhs v0.0.0-20201224082716-5ac6057da11c
+	github.com/go-playground/validator/v10 v10.4.1
 	github.com/gorilla/mux v1.8.0
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/lib/pq v1.9.0 // indirect
@@ -19,4 +21,5 @@ require (
 	github.com/spf13/viper v1.7.1
 	go.mongodb.org/mongo-driver v1.3.5 // indirect
 	gopkg.in/ini.v1 v1.57.0 // indirect
+	gopkg.in/validator.v2 v2.0.0-20200605151824-2b28d334fa05
 )
