@@ -1,6 +1,7 @@
 package customError
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/Kostikans/avitoTest/internal/package/responses"
@@ -14,5 +15,5 @@ func PostError(w http.ResponseWriter, req *http.Request, log *logger.CustomLogge
 	}
 
 	log.LogError(req.Context(), err)
-	responses.SendErrorResponse(w, StatusCode(ParseCode(err)), err.Error())
+	responses.SendErrorResponse(w, StatusCode(ParseCode(err)), errors.Unwrap(err).Error())
 }

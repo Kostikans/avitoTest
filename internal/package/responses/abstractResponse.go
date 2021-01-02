@@ -5,7 +5,7 @@ package responses
 type HttpResponse struct {
 	Data interface{} `json:"data,omitempty"`
 	Code int         `json:"code"`
-	Err  Error       `json:"error,omitempty"`
+	Err  *Error      `json:"error,omitempty"`
 }
 
 // easyjson:json

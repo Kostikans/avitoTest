@@ -15,9 +15,10 @@ type CustomError struct {
 	Err  error
 }
 
-func NewCustomError(err error, code int, skip int) *CustomError {
+func NewCustomError(err error, code int, skip int) error {
 	_, fn, line, _ := runtime.Caller(skip)
-	return &CustomError{Code: code, Line: line, File: fn, Err: err}
+	return fmt.Errorf("code:[%d] file:[%s]  line:[%d]  error:[%w]", code, fn, line, err)
+	//return &CustomError{Code: code, Line: line, File: fn, Err: err}
 }
 
 //func relative(path string) string {

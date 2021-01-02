@@ -47,7 +47,15 @@ func easyjson8fd397efDecodeGithubComKostikansAvitoTestInternalPackageResponses(i
 		case "code":
 			out.Code = int(in.Int())
 		case "error":
-			(out.Err).UnmarshalEasyJSON(in)
+			if in.IsNull() {
+				in.Skip()
+				out.Err = nil
+			} else {
+				if out.Err == nil {
+					out.Err = new(Error)
+				}
+				(*out.Err).UnmarshalEasyJSON(in)
+			}
 		default:
 			in.SkipRecursive()
 		}
@@ -84,10 +92,10 @@ func easyjson8fd397efEncodeGithubComKostikansAvitoTestInternalPackageResponses(o
 		}
 		out.Int(int(in.Code))
 	}
-	if true {
+	if in.Err != nil {
 		const prefix string = ",\"error\":"
 		out.RawString(prefix)
-		(in.Err).MarshalEasyJSON(out)
+		(*in.Err).MarshalEasyJSON(out)
 	}
 	out.RawByte('}')
 }

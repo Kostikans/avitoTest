@@ -2,7 +2,7 @@
 gen:
 	 GO111MODULE=off  swagger generate spec -o ./api/swagger/swagger.yaml --scan-models
 run:
-	go run main.go
+	go run cmd/main.go
 
 start:
 	sudo APP_VERSION=latest docker-compose up
