@@ -3,15 +3,15 @@ package roomModel
 
 // easyjson:json
 type Room struct {
-	RoomID      int64  `json:"room_id" db:"room_id"`
+	RoomID      int    `json:"room_id" db:"room_id"`
 	Created     string `json:"create" db:"created"`
-	Cost        int64  `json:"cost" db:"cost"`
+	Cost        int    `json:"cost" db:"cost"`
 	Description string `json:"description" db:"description"`
 }
 
 // easyjson:json
 type RoomAdd struct {
-	Cost        int64  `json:"cost"`
+	Cost        int    `json:"cost"`
 	Description string `json:"description"`
 }
 
@@ -22,5 +22,5 @@ type RoomOrder struct {
 
 // easyjson:json
 type RoomID struct {
-	RoomID int64 `json:"room_id"`
+	RoomID int `json:"room_id"`
 }

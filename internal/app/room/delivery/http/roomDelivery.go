@@ -34,6 +34,10 @@ func NewRoomHandler(r *mux.Router, usecase room.Usecase, log *logger.CustomLogge
 	return &handler
 }
 
+// swagger:route POST /rooms/create rooms AddRoom
+// responses:
+//  201: roomID
+//  400: badrequest
 func (rh *RoomHandler) AddRoom(w http.ResponseWriter, r *http.Request) {
 	roomAdd := roomModel.RoomAdd{}
 	err := easyjson.UnmarshalFromReader(r.Body, &roomAdd)
@@ -50,9 +54,13 @@ func (rh *RoomHandler) AddRoom(w http.ResponseWriter, r *http.Request) {
 	responses.SendDataResponse(w, okCodes.CreateResponse, roomID)
 }
 
+// swagger:route DELETE /rooms/delete rooms DeleteRoom
+// responses:
+//  400: badrequest
+//  404: notfound
 func (rh *RoomHandler) DeleteRoom(w http.ResponseWriter, r *http.Request) {
 	roomIDVar := r.FormValue("room_id")
-	roomID, err := strconv.ParseInt(roomIDVar, 10, 64)
+	roomID, err := strconv.Atoi(roomIDVar)
 	if err != nil {
 		customError.PostError(w, r, rh.log, err, clientError.BadRequest)
 		return
@@ -66,6 +74,9 @@ func (rh *RoomHandler) DeleteRoom(w http.ResponseWriter, r *http.Request) {
 	responses.SendOkResponse(w, okCodes.OkResponse)
 }
 
+// swagger:route GET /rooms/list rooms GetRooms
+// responses:
+// 200: rooms
 func (rh *RoomHandler) GetRooms(w http.ResponseWriter, r *http.Request) {
 	sort := r.FormValue("sort")
 	order := r.FormValue("desc")

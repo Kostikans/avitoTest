@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	roomModel "github.com/Kostikans/avitoTest/internal/app/room/model"
-	"github.com/Kostikans/avitoTest/internal/package/clientError"
 	"github.com/Kostikans/avitoTest/internal/package/serverError"
 	customerror "github.com/go-park-mail-ru/2020_2_JMickhs/package/error"
 	"github.com/jmoiron/sqlx"
@@ -28,15 +27,15 @@ func (rRep *RoomRepository) AddRoom(room roomModel.RoomAdd) (roomModel.RoomID, e
 	return roomID, nil
 }
 
-func (rRep *RoomRepository) DeleteRoom(roomID int64) error {
-	_, err := rRep.db.Exec(DeleteRoomPostgreRequest, roomID)
+func (rRep *RoomRepository) DeleteRoom(roomID int) error {
+	_, err := rRep.db.Query(DeleteRoomPostgreRequest, roomID)
 	if err != nil {
 		return customerror.NewCustomError(err, serverError.ServerInternalError, 1)
 	}
 	return err
 }
 
-func (rRep *RoomRepository) GenerateQueryForGetRooms(order roomModel.RoomOrder) (string, error) {
+func (rRep *RoomRepository) GenerateQueryForGetRooms(order roomModel.RoomOrder) string {
 	query := GetRoomsPostgreRequest
 	if order.Sort == "date" {
 		query += " ORDER BY created "
@@ -54,16 +53,13 @@ func (rRep *RoomRepository) GenerateQueryForGetRooms(order roomModel.RoomOrder) 
 		}
 	}
 
-	return query, nil
+	return query
 }
 
 func (rRep *RoomRepository) GetRooms(order roomModel.RoomOrder) ([]roomModel.Room, error) {
 	var rooms []roomModel.Room
-	query, err := rRep.GenerateQueryForGetRooms(order)
-	if err != nil {
-		return rooms, customerror.NewCustomError(err, clientError.BadRequest, 1)
-	}
-	err = rRep.db.Select(&rooms, query)
+	query := rRep.GenerateQueryForGetRooms(order)
+	err := rRep.db.Select(&rooms, query)
 	if err != nil {
 		return rooms, customerror.NewCustomError(err, serverError.ServerInternalError, 1)
 	}
@@ -71,7 +67,7 @@ func (rRep *RoomRepository) GetRooms(order roomModel.RoomOrder) ([]roomModel.Roo
 
 }
 
-func (rRep *RoomRepository) CheckRoomExist(roomID int64) (bool, error) {
+func (rRep *RoomRepository) CheckRoomExist(roomID int) (bool, error) {
 	var exists bool
 	query := fmt.Sprintf("SELECT exists (%s)", CheckRoomExistPostgreRequest)
 	err := rRep.db.QueryRow(query, roomID).Scan(&exists)

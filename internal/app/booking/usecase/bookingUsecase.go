@@ -32,7 +32,7 @@ func (bUsecase *BookingUsecase) AddBooking(booking bookingModel.BookingAdd) (boo
 	return bookingID, err
 }
 
-func (bUsecase *BookingUsecase) DeleteBooking(bookingID int64) error {
+func (bUsecase *BookingUsecase) DeleteBooking(bookingID int) error {
 	exist, err := bUsecase.CheckBookingExist(bookingID)
 	if err != nil {
 		return err
@@ -43,7 +43,7 @@ func (bUsecase *BookingUsecase) DeleteBooking(bookingID int64) error {
 	return bUsecase.BookingRepo.DeleteBooking(bookingID)
 }
 
-func (bUsecase *BookingUsecase) GetBookings(roomID int64) ([]bookingModel.Booking, error) {
+func (bUsecase *BookingUsecase) GetBookings(roomID int) ([]bookingModel.Booking, error) {
 	var bookings []bookingModel.Booking
 	exist, err := bUsecase.RoomRepo.CheckRoomExist(roomID)
 	if err != nil {
@@ -56,6 +56,6 @@ func (bUsecase *BookingUsecase) GetBookings(roomID int64) ([]bookingModel.Bookin
 	return bookings, err
 }
 
-func (bUsecase *BookingUsecase) CheckBookingExist(bookingID int64) (bool, error) {
+func (bUsecase *BookingUsecase) CheckBookingExist(bookingID int) (bool, error) {
 	return bUsecase.BookingRepo.CheckBookingExist(bookingID)
 }

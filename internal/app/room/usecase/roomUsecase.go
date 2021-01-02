@@ -21,7 +21,7 @@ func (rUsecase *RoomUsecase) AddRoom(room roomModel.RoomAdd) (roomModel.RoomID, 
 	return rUsecase.RoomRepo.AddRoom(room)
 }
 
-func (rUsecase *RoomUsecase) DeleteRoom(roomID int64) error {
+func (rUsecase *RoomUsecase) DeleteRoom(roomID int) error {
 	exist, err := rUsecase.CheckRoomExist(roomID)
 	if err != nil {
 		return err
@@ -36,6 +36,6 @@ func (rUsecase *RoomUsecase) GetRooms(order roomModel.RoomOrder) ([]roomModel.Ro
 	return rUsecase.RoomRepo.GetRooms(order)
 }
 
-func (rUsecase *RoomUsecase) CheckRoomExist(roomID int64) (bool, error) {
+func (rUsecase *RoomUsecase) CheckRoomExist(roomID int) (bool, error) {
 	return rUsecase.RoomRepo.CheckRoomExist(roomID)
 }

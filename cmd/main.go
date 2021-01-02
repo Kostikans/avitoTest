@@ -49,7 +49,7 @@ func NewRouter() *mux.Router {
 	sh := middleware.Redoc(opts, nil)
 
 	router.Handle("/docs", sh)
-	router.Handle("/swagger.yaml", http.FileServer(http.Dir("../api/swagger")))
+	router.Handle("/swagger.yaml", http.FileServer(http.Dir("./api/swagger")))
 
 	return router
 }
@@ -94,7 +94,6 @@ func main() {
 	bookingRepo := bookingRepository.NewBookingRepository(db)
 
 	roomUse := roomUsecase.NewRoomUsecase(roomRepo)
-	//validate := validator.New()
 	bookingUse := bookingUsecase.NewRoomUsecase(bookingRepo, roomRepo)
 
 	roomDelivery.NewRoomHandler(r, roomUse, log)

@@ -1,13 +1,208 @@
 basePath: /
 consumes:
 - application/json
+definitions:
+  BookingAddWrap:
+    properties:
+      date_end:
+        type: string
+        x-go-name: DateEnd
+      date_start:
+        type: string
+        x-go-name: DateStart
+      room_id:
+        format: int64
+        type: integer
+        x-go-name: RoomID
+    type: object
+    x-go-package: _/home/kostikan/GoBuilds/github.com/Kostikans/avitoTest/docs
+  BookingIDWrap:
+    properties:
+      booking_id:
+        format: int64
+        type: integer
+        x-go-name: BookingID
+    type: object
+    x-go-package: _/home/kostikan/GoBuilds/github.com/Kostikans/avitoTest/docs
+  BookingWrap:
+    properties:
+      booking_id:
+        format: int64
+        type: integer
+        x-go-name: BookingID
+      date_end:
+        type: string
+        x-go-name: DateEnd
+      date_start:
+        type: string
+        x-go-name: DateStart
+    type: object
+    x-go-package: _/home/kostikan/GoBuilds/github.com/Kostikans/avitoTest/docs
+  RoomAddWrap:
+    properties:
+      cost:
+        format: int64
+        type: integer
+        x-go-name: Cost
+      description:
+        type: string
+        x-go-name: Description
+    type: object
+    x-go-package: _/home/kostikan/GoBuilds/github.com/Kostikans/avitoTest/docs
+  RoomIDWrap:
+    properties:
+      room_id:
+        format: int64
+        type: integer
+        x-go-name: RoomID
+    type: object
+    x-go-package: _/home/kostikan/GoBuilds/github.com/Kostikans/avitoTest/docs
+  RoomWrap:
+    properties:
+      cost:
+        format: int64
+        type: integer
+        x-go-name: Cost
+      create:
+        type: string
+        x-go-name: Created
+      description:
+        type: string
+        x-go-name: Description
+      room_id:
+        format: int64
+        type: integer
+        x-go-name: RoomID
+    type: object
+    x-go-package: _/home/kostikan/GoBuilds/github.com/Kostikans/avitoTest/docs
 info:
   description: Swagger spec.
   title: Golang service API for HotelScanner
   version: 1.0.0
-paths: {}
+paths:
+  /bookings/create:
+    post:
+      operationId: AddBooking
+      parameters:
+      - in: body
+        name: BookingAdd
+        schema:
+          $ref: '#/definitions/BookingAddWrap'
+      responses:
+        "201":
+          $ref: '#/responses/bookingID'
+        "400":
+          $ref: '#/responses/badrequest'
+      tags:
+      - bookings
+  /bookings/delete:
+    delete:
+      operationId: DeleteBooking
+      parameters:
+      - format: int64
+        in: query
+        name: booking_id
+        type: integer
+        x-go-name: BookingID
+      responses:
+        "400":
+          $ref: '#/responses/badrequest'
+        "404":
+          $ref: '#/responses/notfound'
+      tags:
+      - bookings
+  /bookings/list:
+    get:
+      operationId: GetBookings
+      parameters:
+      - format: int64
+        in: query
+        name: room_id
+        type: integer
+        x-go-name: BookingID
+      responses:
+        "200":
+          $ref: '#/responses/bookings'
+        "400":
+          $ref: '#/responses/badrequest'
+        "404":
+          $ref: '#/responses/notfound'
+      tags:
+      - bookings
+  /rooms/create:
+    post:
+      operationId: AddRoom
+      parameters:
+      - in: body
+        name: RoomAdd
+        schema:
+          $ref: '#/definitions/RoomAddWrap'
+      responses:
+        "201":
+          $ref: '#/responses/roomID'
+        "400":
+          $ref: '#/responses/badrequest'
+      tags:
+      - rooms
+  /rooms/delete:
+    delete:
+      operationId: DeleteRoom
+      parameters:
+      - format: int64
+        in: query
+        name: room_id
+        required: true
+        type: integer
+        x-go-name: RoomID
+      responses:
+        "400":
+          $ref: '#/responses/badrequest'
+        "404":
+          $ref: '#/responses/notfound'
+      tags:
+      - rooms
+  /rooms/list:
+    get:
+      operationId: GetRooms
+      parameters:
+      - description: sort param; "date","cost"
+        in: query
+        name: sort
+        type: string
+        x-go-name: Sort
+      - description: order param; "true" - desc, "false" - asc
+        in: query
+        name: desc
+        type: boolean
+        x-go-name: Desc
+      responses:
+        "200":
+          $ref: '#/responses/rooms'
+      tags:
+      - rooms
 produces:
 - application/json
+responses:
+  badrequest:
+    description: invalid json or get parameters
+  bookingID:
+    schema:
+      $ref: '#/definitions/BookingIDWrap'
+  bookings:
+    schema:
+      items:
+        $ref: '#/definitions/BookingWrap'
+      type: array
+  notfound:
+    description: data doesn't exist
+  roomID:
+    schema:
+      $ref: '#/definitions/RoomIDWrap'
+  rooms:
+    schema:
+      items:
+        $ref: '#/definitions/RoomWrap'
+      type: array
 schemes:
 - http
 swagger: "2.0"

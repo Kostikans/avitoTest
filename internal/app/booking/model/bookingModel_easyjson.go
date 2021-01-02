@@ -37,7 +37,7 @@ func easyjson4404181cDecodeGithubComKostikansAvitoTestInternalAppBookingModel(in
 		}
 		switch key {
 		case "booking_id":
-			out.BookingID = int64(in.Int64())
+			out.BookingID = int(in.Int())
 		default:
 			in.SkipRecursive()
 		}
@@ -55,7 +55,7 @@ func easyjson4404181cEncodeGithubComKostikansAvitoTestInternalAppBookingModel(ou
 	{
 		const prefix string = ",\"booking_id\":"
 		out.RawString(prefix[1:])
-		out.Int64(int64(in.BookingID))
+		out.Int(int(in.BookingID))
 	}
 	out.RawByte('}')
 }
@@ -103,7 +103,7 @@ func easyjson4404181cDecodeGithubComKostikansAvitoTestInternalAppBookingModel1(i
 		}
 		switch key {
 		case "room_id":
-			out.RoomID = int64(in.Int64())
+			out.RoomID = int(in.Int())
 		case "date_start":
 			out.DateStart = string(in.String())
 		case "date_end":
@@ -125,7 +125,7 @@ func easyjson4404181cEncodeGithubComKostikansAvitoTestInternalAppBookingModel1(o
 	{
 		const prefix string = ",\"room_id\":"
 		out.RawString(prefix[1:])
-		out.Int64(int64(in.RoomID))
+		out.Int(int(in.RoomID))
 	}
 	{
 		const prefix string = ",\"date_start\":"
@@ -183,7 +183,7 @@ func easyjson4404181cDecodeGithubComKostikansAvitoTestInternalAppBookingModel2(i
 		}
 		switch key {
 		case "booking_id":
-			out.BookingID = int64(in.Int64())
+			out.BookingID = int(in.Int())
 		case "date_start":
 			out.DateStart = string(in.String())
 		case "date_end":
@@ -205,7 +205,7 @@ func easyjson4404181cEncodeGithubComKostikansAvitoTestInternalAppBookingModel2(o
 	{
 		const prefix string = ",\"booking_id\":"
 		out.RawString(prefix[1:])
-		out.Int64(int64(in.BookingID))
+		out.Int(int(in.BookingID))
 	}
 	{
 		const prefix string = ",\"date_start\":"

@@ -43,7 +43,7 @@ func (rRep *BookingRepository) AddBooking(booking bookingModel.BookingAdd) (book
 	return bookingID, nil
 }
 
-func (rRep *BookingRepository) DeleteBooking(bookingID int64) error {
+func (rRep *BookingRepository) DeleteBooking(bookingID int) error {
 	_, err := rRep.db.Exec(DeleteRoomPostgreRequest, bookingID)
 	if err != nil {
 		return customerror.NewCustomError(err, serverError.ServerInternalError, 1)
@@ -51,7 +51,7 @@ func (rRep *BookingRepository) DeleteBooking(bookingID int64) error {
 	return err
 }
 
-func (rRep *BookingRepository) GetBookings(roomID int64) ([]bookingModel.Booking, error) {
+func (rRep *BookingRepository) GetBookings(roomID int) ([]bookingModel.Booking, error) {
 	var bookings []bookingModel.Booking
 	err := rRep.db.Select(&bookings, GetBookingsPostgreRequest, roomID)
 	if err != nil {
@@ -60,7 +60,7 @@ func (rRep *BookingRepository) GetBookings(roomID int64) ([]bookingModel.Booking
 	return bookings, err
 }
 
-func (rRep *BookingRepository) CheckBookingExist(roomID int64) (bool, error) {
+func (rRep *BookingRepository) CheckBookingExist(roomID int) (bool, error) {
 	var exists bool
 	query := fmt.Sprintf("SELECT exists (%s)", CheckBookingExistPostgreRequest)
 	err := rRep.db.QueryRow(query, roomID).Scan(&exists)

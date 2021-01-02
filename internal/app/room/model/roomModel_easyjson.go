@@ -110,7 +110,7 @@ func easyjson9b1d4d46DecodeGithubComKostikansAvitoTestInternalAppRoomModel1(in *
 		}
 		switch key {
 		case "room_id":
-			out.RoomID = int64(in.Int64())
+			out.RoomID = int(in.Int())
 		default:
 			in.SkipRecursive()
 		}
@@ -128,7 +128,7 @@ func easyjson9b1d4d46EncodeGithubComKostikansAvitoTestInternalAppRoomModel1(out 
 	{
 		const prefix string = ",\"room_id\":"
 		out.RawString(prefix[1:])
-		out.Int64(int64(in.RoomID))
+		out.Int(int(in.RoomID))
 	}
 	out.RawByte('}')
 }
@@ -176,7 +176,7 @@ func easyjson9b1d4d46DecodeGithubComKostikansAvitoTestInternalAppRoomModel2(in *
 		}
 		switch key {
 		case "cost":
-			out.Cost = int64(in.Int64())
+			out.Cost = int(in.Int())
 		case "description":
 			out.Description = string(in.String())
 		default:
@@ -196,7 +196,7 @@ func easyjson9b1d4d46EncodeGithubComKostikansAvitoTestInternalAppRoomModel2(out 
 	{
 		const prefix string = ",\"cost\":"
 		out.RawString(prefix[1:])
-		out.Int64(int64(in.Cost))
+		out.Int(int(in.Cost))
 	}
 	{
 		const prefix string = ",\"description\":"
@@ -249,11 +249,11 @@ func easyjson9b1d4d46DecodeGithubComKostikansAvitoTestInternalAppRoomModel3(in *
 		}
 		switch key {
 		case "room_id":
-			out.RoomID = int64(in.Int64())
+			out.RoomID = int(in.Int())
 		case "create":
 			out.Created = string(in.String())
 		case "cost":
-			out.Cost = int64(in.Int64())
+			out.Cost = int(in.Int())
 		case "description":
 			out.Description = string(in.String())
 		default:
@@ -273,7 +273,7 @@ func easyjson9b1d4d46EncodeGithubComKostikansAvitoTestInternalAppRoomModel3(out 
 	{
 		const prefix string = ",\"room_id\":"
 		out.RawString(prefix[1:])
-		out.Int64(int64(in.RoomID))
+		out.Int(int(in.RoomID))
 	}
 	{
 		const prefix string = ",\"create\":"
@@ -283,7 +283,7 @@ func easyjson9b1d4d46EncodeGithubComKostikansAvitoTestInternalAppRoomModel3(out 
 	{
 		const prefix string = ",\"cost\":"
 		out.RawString(prefix)
-		out.Int64(int64(in.Cost))
+		out.Int(int(in.Cost))
 	}
 	{
 		const prefix string = ",\"description\":"
