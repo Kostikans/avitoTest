@@ -1,6 +1,7 @@
 package roomDelivery
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
 
@@ -30,7 +31,7 @@ func NewRoomHandler(r *mux.Router, usecase room.Usecase, log *logger.CustomLogge
 
 	r.HandleFunc("/rooms/create", handler.AddRoom).Methods("POST")
 	r.HandleFunc("/rooms/list", handler.GetRooms).Methods("GET")
-	r.Path("/rooms/delete").Queries("room_id", "{room_id:[0-9]+}").HandlerFunc(handler.DeleteRoom).Methods("DELETE")
+	r.Path("/rooms/delete").Queries("room_id", "{room_id}").HandlerFunc(handler.DeleteRoom).Methods("DELETE")
 	return &handler
 }
 
@@ -42,7 +43,7 @@ func (rh *RoomHandler) AddRoom(w http.ResponseWriter, r *http.Request) {
 	roomAdd := roomModel.RoomAdd{}
 	err := easyjson.UnmarshalFromReader(r.Body, &roomAdd)
 	if err != nil {
-		customError.PostError(w, r, rh.log, err, clientError.BadRequest)
+		customError.PostError(w, r, rh.log, errors.New("wrong type of query params"), clientError.BadRequest)
 		return
 	}
 

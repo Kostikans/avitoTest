@@ -1,6 +1,7 @@
 package bookingDelivery
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
 
@@ -26,8 +27,8 @@ func NewBookingHandler(r *mux.Router, usecase booking.Usecase, log *logger.Custo
 	handler := BookingHandler{bookingUsecase: usecase, log: log}
 
 	r.HandleFunc("/bookings/create", handler.AddBooking).Methods("POST")
-	r.Path("/bookings/list").Queries("room_id", "{room_id:[0-9]+}").HandlerFunc(handler.GetBookings).Methods("GET")
-	r.Path("/bookings/delete").Queries("booking_id", "{booking_id:[0-9]+}").HandlerFunc(handler.DeleteBooking).Methods("DELETE")
+	r.Path("/bookings/list").Queries("room_id", "{room_id}").HandlerFunc(handler.GetBookings).Methods("GET")
+	r.Path("/bookings/delete").Queries("booking_id", "{booking_id}").HandlerFunc(handler.DeleteBooking).Methods("DELETE")
 	return &handler
 }
 
@@ -39,7 +40,7 @@ func (rh *BookingHandler) AddBooking(w http.ResponseWriter, r *http.Request) {
 	bookingAdd := bookingModel.BookingAdd{}
 	err := easyjson.UnmarshalFromReader(r.Body, &bookingAdd)
 	if err != nil {
-		customError.PostError(w, r, rh.log, err, clientError.BadRequest)
+		customError.PostError(w, r, rh.log, errors.New("wrong type of query params"), clientError.BadRequest)
 		return
 	}
 
@@ -59,7 +60,7 @@ func (rh *BookingHandler) DeleteBooking(w http.ResponseWriter, r *http.Request) 
 	bookingIDVar := r.FormValue("booking_id")
 	bookingID, err := strconv.Atoi(bookingIDVar)
 	if err != nil {
-		customError.PostError(w, r, rh.log, err, clientError.BadRequest)
+		customError.PostError(w, r, rh.log, errors.New("wrong type of query params"), clientError.BadRequest)
 		return
 	}
 
@@ -80,7 +81,7 @@ func (rh *BookingHandler) GetBookings(w http.ResponseWriter, r *http.Request) {
 	roomIDVar := r.FormValue("room_id")
 	roomID, err := strconv.Atoi(roomIDVar)
 	if err != nil {
-		customError.PostError(w, r, rh.log, err, clientError.BadRequest)
+		customError.PostError(w, r, rh.log, errors.New("wrong type of query params"), clientError.BadRequest)
 		return
 	}
 	rooms, err := rh.bookingUsecase.GetBookings(roomID)
