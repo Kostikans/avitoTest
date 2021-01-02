@@ -14,3 +14,6 @@ upload:
 
 pull:
 	sudo docker pull kostikan/avito_service:latest
+
+tests:
+	go test -coverprofile=coverage1.out -coverpkg=./... -cover ./... && cat coverage1.out | grep -v  easyjson | grep -v mocks > cover.out &&go tool cover -func=cover.out

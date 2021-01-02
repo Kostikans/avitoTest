@@ -1,3 +1,4 @@
+//go:generate mockgen -source usecase.go -destination mocks/room_usecase_mock.go -package room_mock
 package room
 
 import roomModel "github.com/Kostikans/avitoTest/internal/app/room/model"

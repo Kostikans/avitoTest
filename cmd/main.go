@@ -94,7 +94,7 @@ func main() {
 	bookingRepo := bookingRepository.NewBookingRepository(db)
 
 	roomUse := roomUsecase.NewRoomUsecase(roomRepo)
-	bookingUse := bookingUsecase.NewRoomUsecase(bookingRepo, roomRepo)
+	bookingUse := bookingUsecase.NewBookingUsecase(bookingRepo, roomRepo)
 
 	roomDelivery.NewRoomHandler(r, roomUse, log)
 	bookingDelivery.NewBookingHandler(r, bookingUse, log)

@@ -9,6 +9,7 @@ require (
 	github.com/go-openapi/runtime v0.19.24
 	github.com/go-park-mail-ru/2020_2_JMickhs v0.0.0-20201224082716-5ac6057da11c
 	github.com/go-playground/validator/v10 v10.4.1
+	github.com/golang/mock v1.4.4
 	github.com/gorilla/mux v1.8.0
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/joho/godotenv v1.3.0

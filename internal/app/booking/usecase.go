@@ -1,3 +1,4 @@
+//go:generate mockgen -source usecase.go -destination mocks/booking_usecase_mock.go -package booking_mock
 package booking
 
 import bookingModel "github.com/Kostikans/avitoTest/internal/app/booking/model"

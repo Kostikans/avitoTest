@@ -15,7 +15,7 @@ type BookingUsecase struct {
 	RoomRepo    room.Repository
 }
 
-func NewRoomUsecase(BookingRepo booking.Repository, RoomRepo room.Repository) *BookingUsecase {
+func NewBookingUsecase(BookingRepo booking.Repository, RoomRepo room.Repository) *BookingUsecase {
 	return &BookingUsecase{BookingRepo: BookingRepo, RoomRepo: RoomRepo}
 }
 

@@ -1,3 +1,4 @@
+//go:generate mockgen -source repository.go -destination mocks/room_repository_mock.go -package room_mock
 package room
 
 import roomModel "github.com/Kostikans/avitoTest/internal/app/room/model"
