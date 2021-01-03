@@ -1,4 +1,4 @@
-//  Golang service API for HotelScanner
+//  Golang service API for Avito
 //
 //  Swagger spec.
 //
@@ -19,6 +19,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/spf13/viper"
 
 	bookingDelivery "github.com/Kostikans/avitoTest/internal/app/booking/delivery/http"
 	bookingRepository "github.com/Kostikans/avitoTest/internal/app/booking/repository"
@@ -60,7 +62,6 @@ func InitDB() *sqlx.DB {
 		configs.BdConfig.Password,
 		configs.BdConfig.DBName)
 
-	fmt.Println(connStr)
 	db, err := sqlx.Connect("postgres", connStr)
 	if err != nil {
 		log.Fatalln(err)
@@ -77,6 +78,10 @@ func main() {
 	configs.Init()
 	db := InitDB()
 	logOutput, err := os.Create("log.txt")
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = configs.ExportConfig()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -99,9 +104,9 @@ func main() {
 	roomDelivery.NewRoomHandler(r, roomUse, log)
 	bookingDelivery.NewBookingHandler(r, bookingUse, log)
 
-	err = http.ListenAndServe(":9000", r)
+	err = http.ListenAndServe(viper.GetString(configs.ConfigFields.AvitoServicePort), r)
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Info("Server started at port", ":9000")
+	log.Info("Server started at port", viper.GetString(configs.ConfigFields.AvitoServicePort))
 }

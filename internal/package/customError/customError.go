@@ -18,12 +18,7 @@ type CustomError struct {
 func NewCustomError(err error, code int, skip int) error {
 	_, fn, line, _ := runtime.Caller(skip)
 	return fmt.Errorf("code:[%d] file:[%s]  line:[%d]  error:[%w]", code, fn, line, err)
-	//return &CustomError{Code: code, Line: line, File: fn, Err: err}
 }
-
-//func relative(path string) string {
-//	return strings.TrimPrefix(filepath.ToSlash(path), packageConfig.PrefixPath)
-//}
 
 func ParseCode(err error) int {
 	index := strings.Index(err.Error(), "]")

@@ -6,6 +6,12 @@ import (
 	"github.com/spf13/viper"
 )
 
+var ConfigFields = struct {
+	AvitoServicePort string
+}{
+	AvitoServicePort: "ports.AvitoServicePort",
+}
+
 type postgresConfig struct {
 	User     string
 	Password string
@@ -20,6 +26,7 @@ func Init() {
 		Password: os.Getenv("PostgresAvitoPassword"),
 		DBName:   os.Getenv("PostgresAvitoDBName"),
 	}
+
 }
 
 func ExportConfig() error {

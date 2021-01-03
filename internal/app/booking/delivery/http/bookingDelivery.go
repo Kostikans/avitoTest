@@ -40,7 +40,7 @@ func (rh *BookingHandler) AddBooking(w http.ResponseWriter, r *http.Request) {
 	bookingAdd := bookingModel.BookingAdd{}
 	err := easyjson.UnmarshalFromReader(r.Body, &bookingAdd)
 	if err != nil {
-		customError.PostError(w, r, rh.log, errors.New("wrong type of query params"), clientError.BadRequest)
+		customError.PostError(w, r, rh.log, errors.New("invalid input json"), clientError.BadRequest)
 		return
 	}
 

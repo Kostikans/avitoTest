@@ -77,7 +77,7 @@ definitions:
     x-go-package: _/home/kostikan/GoBuilds/github.com/Kostikans/avitoTest/docs
 info:
   description: Swagger spec.
-  title: Golang service API for HotelScanner
+  title: Golang service API for Avito
   version: 1.0.0
 paths:
   /bookings/create:
