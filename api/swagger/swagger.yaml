@@ -1,21 +1,7 @@
 basePath: /
 consumes:
-- application/json
+- application/x-www-form-urlencoded
 definitions:
-  BookingAddWrap:
-    properties:
-      date_end:
-        type: string
-        x-go-name: DateEnd
-      date_start:
-        type: string
-        x-go-name: DateStart
-      room_id:
-        format: int64
-        type: integer
-        x-go-name: RoomID
-    type: object
-    x-go-package: _/home/kostikan/GoBuilds/github.com/Kostikans/avitoTest/docs
   BookingIDWrap:
     properties:
       booking_id:
@@ -36,17 +22,6 @@ definitions:
       date_start:
         type: string
         x-go-name: DateStart
-    type: object
-    x-go-package: _/home/kostikan/GoBuilds/github.com/Kostikans/avitoTest/docs
-  RoomAddWrap:
-    properties:
-      cost:
-        format: int64
-        type: integer
-        x-go-name: Cost
-      description:
-        type: string
-        x-go-name: Description
     type: object
     x-go-package: _/home/kostikan/GoBuilds/github.com/Kostikans/avitoTest/docs
   RoomIDWrap:
@@ -84,11 +59,24 @@ paths:
     post:
       operationId: AddBooking
       parameters:
-      - in: body
-        name: BookingAdd
-        schema:
-          $ref: '#/definitions/BookingAddWrap'
+      - format: int64
+        in: formData
+        name: room_id
+        required: true
+        type: integer
+        x-go-name: RoomID
+      - in: formData
+        name: date_start
+        required: true
+        type: string
+        x-go-name: DateStart
+      - in: formData
+        name: date_end
+        required: true
+        type: string
+        x-go-name: DateEnd
       responses:
+        "200": {}
         "201":
           $ref: '#/responses/bookingID'
         "400":
@@ -102,9 +90,11 @@ paths:
       - format: int64
         in: query
         name: booking_id
+        required: true
         type: integer
         x-go-name: BookingID
       responses:
+        "200": {}
         "400":
           $ref: '#/responses/badrequest'
         "404":
@@ -118,6 +108,7 @@ paths:
       - format: int64
         in: query
         name: room_id
+        required: true
         type: integer
         x-go-name: BookingID
       responses:
@@ -133,10 +124,17 @@ paths:
     post:
       operationId: AddRoom
       parameters:
-      - in: body
-        name: RoomAdd
-        schema:
-          $ref: '#/definitions/RoomAddWrap'
+      - format: int64
+        in: formData
+        name: cost
+        required: true
+        type: integer
+        x-go-name: Cost
+      - in: formData
+        name: description
+        required: true
+        type: string
+        x-go-name: Description
       responses:
         "201":
           $ref: '#/responses/roomID'

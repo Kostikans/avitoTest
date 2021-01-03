@@ -10,9 +10,9 @@ type Booking struct {
 
 // easyjson:json
 type BookingAdd struct {
-	RoomID    int    `json:"room_id"`
-	DateStart string `json:"date_start" db:"date_start" `
-	DateEnd   string `json:"date_end" db:"date_end" `
+	RoomID    int    `json:"room_id" schema:"room_id,required"`
+	DateStart string `json:"date_start" db:"date_start"  schema:"date_start,required"`
+	DateEnd   string `json:"date_end" db:"date_end" schema:"date_end,required"`
 }
 
 // easyjson:json

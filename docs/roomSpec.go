@@ -1,10 +1,5 @@
 package swagger
 
-type RoomAddWrap struct {
-	Cost        int    `json:"cost"`
-	Description string `json:"description"`
-}
-
 type RoomIDWrap struct {
 	RoomID int `json:"room_id"`
 }
@@ -18,8 +13,12 @@ type RoomWrap struct {
 
 //swagger:parameters AddRoom
 type AddRoomRequestWrap struct {
-	//in: body
-	RoomAdd RoomAddWrap
+	//in: formData
+	//required: true
+	Cost int `json:"cost"`
+	//in: formData
+	//required: true
+	Description string `json:"description"`
 }
 
 //swagger:parameters GetRooms

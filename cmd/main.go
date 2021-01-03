@@ -7,7 +7,7 @@
 //  Version: 1.0.0
 //
 //  Consumes:
-//  - application/json
+//  - application/x-www-form-urlencoded
 //
 //  Produces:
 //	- application/json
@@ -19,6 +19,10 @@ import (
 	"log"
 	"net/http"
 	"os"
+
+	httpSwagger "github.com/swaggo/http-swagger"
+
+	"github.com/gorilla/schema"
 
 	"github.com/spf13/viper"
 
@@ -37,7 +41,6 @@ import (
 	apiMiddleware "github.com/Kostikans/avitoTest/internal/app/middleware"
 
 	"github.com/Kostikans/avitoTest/configs"
-	"github.com/go-openapi/runtime/middleware"
 	"github.com/gorilla/mux"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
@@ -47,10 +50,12 @@ func NewRouter() *mux.Router {
 
 	router := mux.NewRouter().StrictSlash(true)
 
-	opts := middleware.RedocOpts{SpecURL: "/swagger.yaml"}
-	sh := middleware.Redoc(opts, nil)
-
-	router.Handle("/docs", sh)
+	router.PathPrefix("/docs/").Handler(httpSwagger.Handler(
+		httpSwagger.URL("http://localhost:9000/swagger.yaml"),
+		httpSwagger.DeepLinking(true),
+		httpSwagger.DocExpansion("none"),
+		httpSwagger.DomID("#swagger-ui"),
+	))
 	router.Handle("/swagger.yaml", http.FileServer(http.Dir("./api/swagger")))
 
 	return router
@@ -100,9 +105,9 @@ func main() {
 
 	roomUse := roomUsecase.NewRoomUsecase(roomRepo)
 	bookingUse := bookingUsecase.NewBookingUsecase(bookingRepo, roomRepo)
-
-	roomDelivery.NewRoomHandler(r, roomUse, log)
-	bookingDelivery.NewBookingHandler(r, bookingUse, log)
+	decoder := schema.NewDecoder()
+	roomDelivery.NewRoomHandler(r, roomUse, log, decoder)
+	bookingDelivery.NewBookingHandler(r, bookingUse, log, decoder)
 
 	err = http.ListenAndServe(viper.GetString(configs.ConfigFields.AvitoServicePort), r)
 	if err != nil {

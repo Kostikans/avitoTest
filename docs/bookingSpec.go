@@ -1,11 +1,5 @@
 package swagger
 
-type BookingAddWrap struct {
-	RoomID    int    `json:"room_id"`
-	DateStart string `json:"date_start"`
-	DateEnd   string `json:"date_end"`
-}
-
 type BookingWrap struct {
 	BookingID int    `json:"booking_id"`
 	DateStart string `json:"date_start"`
@@ -18,8 +12,15 @@ type BookingIDWrap struct {
 
 //swagger:parameters AddBooking
 type AddBookingRequestWrap struct {
-	//in: body
-	BookingAdd BookingAddWrap
+	///in: formData
+	//required: true
+	RoomID int `json:"room_id"`
+	//in: formData
+	//required: true
+	DateStart string `json:"date_start"`
+	//in: formData
+	//required: true
+	DateEnd string `json:"date_end"`
 }
 
 //swagger:response bookings
@@ -31,12 +32,14 @@ type GetBookingsResponseWrap struct {
 //swagger:parameters GetBookings
 type GetBookingsRequestWrap struct {
 	//in: query
+	//required: true
 	BookingID int `json:"room_id"`
 }
 
 //swagger:parameters DeleteBooking
 type DeleteBookingRequestWrap struct {
 	//in: query
+	//required: true
 	BookingID int `json:"booking_id"`
 }
 

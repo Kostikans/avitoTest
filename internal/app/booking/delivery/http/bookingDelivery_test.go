@@ -7,8 +7,11 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"os"
 	"testing"
+
+	"github.com/gorilla/schema"
 
 	bookingModel "github.com/Kostikans/avitoTest/internal/app/booking/model"
 
@@ -21,12 +24,12 @@ import (
 	"github.com/Kostikans/avitoTest/internal/package/responses"
 	"github.com/Kostikans/avitoTest/internal/package/serverError"
 	"github.com/golang/mock/gomock"
-	"github.com/mailru/easyjson"
 	"github.com/mitchellh/mapstructure"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestBookingHandler_AddBooking(t *testing.T) {
+	decoder := schema.NewDecoder()
 	t.Run("AddBooking", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
@@ -34,19 +37,25 @@ func TestBookingHandler_AddBooking(t *testing.T) {
 		bookingIDTest := bookingModel.BookingID{BookingID: 2}
 		mockBookingUseCase := booking_mock.NewMockUsecase(ctrl)
 
+		var encoder = schema.NewEncoder()
+		form := url.Values{}
+		err := encoder.Encode(testBookingAdd, form)
+		assert.NoError(t, err)
+
 		mockBookingUseCase.EXPECT().
 			AddBooking(testBookingAdd).
 			Return(bookingIDTest, nil)
 
-		body, err := easyjson.Marshal(testBookingAdd)
+		req, err := http.NewRequest("GET", "bookings/create", nil)
+
 		assert.NoError(t, err)
-		req, err := http.NewRequest("GET", "bookings/create", bytes.NewBuffer(body))
-		assert.NoError(t, err)
+		req.PostForm = form
 
 		rec := httptest.NewRecorder()
 		handler := BookingHandler{
 			bookingUsecase: mockBookingUseCase,
 			log:            logger.NewLogger(os.Stdout),
+			decoder:        decoder,
 		}
 
 		handler.AddBooking(rec, req)
@@ -74,6 +83,7 @@ func TestBookingHandler_AddBooking(t *testing.T) {
 
 		body, err := json.Marshal(testBookingAdd)
 		assert.NoError(t, err)
+
 		req, err := http.NewRequest("GET", "bookings/create", bytes.NewBuffer(body))
 		assert.NoError(t, err)
 
@@ -81,6 +91,7 @@ func TestBookingHandler_AddBooking(t *testing.T) {
 		handler := BookingHandler{
 			bookingUsecase: mockBookingUseCase,
 			log:            logger.NewLogger(os.Stdout),
+			decoder:        decoder,
 		}
 
 		handler.AddBooking(rec, req)
@@ -101,19 +112,24 @@ func TestBookingHandler_AddBooking(t *testing.T) {
 		bookingIDTest := bookingModel.BookingID{BookingID: 2}
 		mockBookingUseCase := booking_mock.NewMockUsecase(ctrl)
 
+		var encoder = schema.NewEncoder()
+		form := url.Values{}
+		err := encoder.Encode(testBookingAdd, form)
+		assert.NoError(t, err)
+
 		mockBookingUseCase.EXPECT().
 			AddBooking(testBookingAdd).
 			Return(bookingIDTest, customError.NewCustomError(errors.New(""), serverError.ServerInternalError, 1))
 
-		body, err := easyjson.Marshal(testBookingAdd)
+		req, err := http.NewRequest("GET", "bookings/create", nil)
 		assert.NoError(t, err)
-		req, err := http.NewRequest("GET", "bookings/create", bytes.NewBuffer(body))
-		assert.NoError(t, err)
+		req.PostForm = form
 
 		rec := httptest.NewRecorder()
 		handler := BookingHandler{
 			bookingUsecase: mockBookingUseCase,
 			log:            logger.NewLogger(os.Stdout),
+			decoder:        decoder,
 		}
 
 		handler.AddBooking(rec, req)

@@ -11,8 +11,8 @@ type Room struct {
 
 // easyjson:json
 type RoomAdd struct {
-	Cost        int    `json:"cost"`
-	Description string `json:"description"`
+	Cost        int    `json:"cost" schema:"cost,required"`
+	Description string `json:"description" schema:"description,required"`
 }
 
 type RoomOrder struct {

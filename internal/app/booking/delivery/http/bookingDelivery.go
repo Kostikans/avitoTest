@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/gorilla/schema"
+
 	"github.com/Kostikans/avitoTest/internal/package/okCodes"
 
 	bookingModel "github.com/Kostikans/avitoTest/internal/app/booking/model"
@@ -15,16 +17,16 @@ import (
 	"github.com/Kostikans/avitoTest/internal/package/logger"
 	"github.com/Kostikans/avitoTest/internal/package/responses"
 	"github.com/gorilla/mux"
-	"github.com/mailru/easyjson"
 )
 
 type BookingHandler struct {
 	bookingUsecase booking.Usecase
+	decoder        *schema.Decoder
 	log            *logger.CustomLogger
 }
 
-func NewBookingHandler(r *mux.Router, usecase booking.Usecase, log *logger.CustomLogger) *BookingHandler {
-	handler := BookingHandler{bookingUsecase: usecase, log: log}
+func NewBookingHandler(r *mux.Router, usecase booking.Usecase, log *logger.CustomLogger, decoder *schema.Decoder) *BookingHandler {
+	handler := BookingHandler{bookingUsecase: usecase, log: log, decoder: decoder}
 
 	r.HandleFunc("/bookings/create", handler.AddBooking).Methods("POST")
 	r.Path("/bookings/list").Queries("room_id", "{room_id}").HandlerFunc(handler.GetBookings).Methods("GET")
@@ -34,19 +36,24 @@ func NewBookingHandler(r *mux.Router, usecase booking.Usecase, log *logger.Custo
 
 // swagger:route POST /bookings/create bookings AddBooking
 // responses:
+//  200:
 //  201: bookingID
 //  400: badrequest
-func (rh *BookingHandler) AddBooking(w http.ResponseWriter, r *http.Request) {
+func (bh *BookingHandler) AddBooking(w http.ResponseWriter, r *http.Request) {
 	bookingAdd := bookingModel.BookingAdd{}
-	err := easyjson.UnmarshalFromReader(r.Body, &bookingAdd)
+	err := r.ParseForm()
 	if err != nil {
-		customError.PostError(w, r, rh.log, errors.New("invalid input json"), clientError.BadRequest)
+		customError.PostError(w, r, bh.log, errors.New("cannot parse form"), clientError.BadRequest)
 		return
 	}
-
-	bookingID, err := rh.bookingUsecase.AddBooking(bookingAdd)
+	err = bh.decoder.Decode(&bookingAdd, r.PostForm)
 	if err != nil {
-		customError.PostError(w, r, rh.log, err, nil)
+		customError.PostError(w, r, bh.log, errors.New("cannot decode into struct"), clientError.BadRequest)
+		return
+	}
+	bookingID, err := bh.bookingUsecase.AddBooking(bookingAdd)
+	if err != nil {
+		customError.PostError(w, r, bh.log, err, nil)
 		return
 	}
 	responses.SendDataResponse(w, okCodes.CreateResponse, bookingID)
@@ -54,19 +61,20 @@ func (rh *BookingHandler) AddBooking(w http.ResponseWriter, r *http.Request) {
 
 // swagger:route DELETE /bookings/delete bookings DeleteBooking
 // responses:
+//  200:
 //  400: badrequest
 //  404: notfound
-func (rh *BookingHandler) DeleteBooking(w http.ResponseWriter, r *http.Request) {
+func (bh *BookingHandler) DeleteBooking(w http.ResponseWriter, r *http.Request) {
 	bookingIDVar := r.FormValue("booking_id")
 	bookingID, err := strconv.Atoi(bookingIDVar)
 	if err != nil {
-		customError.PostError(w, r, rh.log, errors.New("wrong type of query params"), clientError.BadRequest)
+		customError.PostError(w, r, bh.log, errors.New("wrong type of query params"), clientError.BadRequest)
 		return
 	}
 
-	err = rh.bookingUsecase.DeleteBooking(bookingID)
+	err = bh.bookingUsecase.DeleteBooking(bookingID)
 	if err != nil {
-		customError.PostError(w, r, rh.log, err, nil)
+		customError.PostError(w, r, bh.log, err, nil)
 		return
 	}
 	responses.SendOkResponse(w, okCodes.OkResponse)
@@ -77,16 +85,16 @@ func (rh *BookingHandler) DeleteBooking(w http.ResponseWriter, r *http.Request) 
 //  200: bookings
 //  400: badrequest
 //  404: notfound
-func (rh *BookingHandler) GetBookings(w http.ResponseWriter, r *http.Request) {
+func (bh *BookingHandler) GetBookings(w http.ResponseWriter, r *http.Request) {
 	roomIDVar := r.FormValue("room_id")
 	roomID, err := strconv.Atoi(roomIDVar)
 	if err != nil {
-		customError.PostError(w, r, rh.log, errors.New("wrong type of query params"), clientError.BadRequest)
+		customError.PostError(w, r, bh.log, errors.New("wrong type of query params"), clientError.BadRequest)
 		return
 	}
-	rooms, err := rh.bookingUsecase.GetBookings(roomID)
+	rooms, err := bh.bookingUsecase.GetBookings(roomID)
 	if err != nil {
-		customError.PostError(w, r, rh.log, err, nil)
+		customError.PostError(w, r, bh.log, err, nil)
 		return
 	}
 	responses.SendDataResponse(w, okCodes.OkResponse, rooms)

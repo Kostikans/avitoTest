@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/gorilla/schema"
+
 	"github.com/Kostikans/avitoTest/internal/package/okCodes"
 
 	"github.com/Kostikans/avitoTest/internal/package/responses"
@@ -13,10 +15,8 @@ import (
 
 	"github.com/Kostikans/avitoTest/internal/package/customError"
 
-	roomModel "github.com/Kostikans/avitoTest/internal/app/room/model"
-	"github.com/mailru/easyjson"
-
 	"github.com/Kostikans/avitoTest/internal/app/room"
+	roomModel "github.com/Kostikans/avitoTest/internal/app/room/model"
 	"github.com/Kostikans/avitoTest/internal/package/logger"
 	"github.com/gorilla/mux"
 )
@@ -24,10 +24,11 @@ import (
 type RoomHandler struct {
 	roomUsecase room.Usecase
 	log         *logger.CustomLogger
+	decoder     *schema.Decoder
 }
 
-func NewRoomHandler(r *mux.Router, usecase room.Usecase, log *logger.CustomLogger) *RoomHandler {
-	handler := RoomHandler{roomUsecase: usecase, log: log}
+func NewRoomHandler(r *mux.Router, usecase room.Usecase, log *logger.CustomLogger, decoder *schema.Decoder) *RoomHandler {
+	handler := RoomHandler{roomUsecase: usecase, log: log, decoder: decoder}
 
 	r.HandleFunc("/rooms/create", handler.AddRoom).Methods("POST")
 	r.HandleFunc("/rooms/list", handler.GetRooms).Methods("GET")
@@ -41,9 +42,14 @@ func NewRoomHandler(r *mux.Router, usecase room.Usecase, log *logger.CustomLogge
 //  400: badrequest
 func (rh *RoomHandler) AddRoom(w http.ResponseWriter, r *http.Request) {
 	roomAdd := roomModel.RoomAdd{}
-	err := easyjson.UnmarshalFromReader(r.Body, &roomAdd)
+	err := r.ParseForm()
 	if err != nil {
-		customError.PostError(w, r, rh.log, errors.New("invalid input json"), clientError.BadRequest)
+		customError.PostError(w, r, rh.log, errors.New("cannot parse form"), clientError.BadRequest)
+		return
+	}
+	err = rh.decoder.Decode(&roomAdd, r.PostForm)
+	if err != nil {
+		customError.PostError(w, r, rh.log, errors.New("cannot decode into struct"), clientError.BadRequest)
 		return
 	}
 

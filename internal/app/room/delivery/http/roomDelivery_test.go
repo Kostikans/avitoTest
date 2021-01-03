@@ -7,8 +7,11 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"os"
 	"testing"
+
+	"github.com/gorilla/schema"
 
 	"github.com/Kostikans/avitoTest/internal/package/customError"
 	"github.com/Kostikans/avitoTest/internal/package/serverError"
@@ -16,8 +19,6 @@ import (
 	"github.com/Kostikans/avitoTest/internal/package/clientError"
 
 	"github.com/Kostikans/avitoTest/internal/package/okCodes"
-
-	"github.com/mailru/easyjson"
 
 	room_mock "github.com/Kostikans/avitoTest/internal/app/room/mocks"
 	roomModel "github.com/Kostikans/avitoTest/internal/app/room/model"
@@ -29,6 +30,7 @@ import (
 )
 
 func TestRoomHandler_AddRoom(t *testing.T) {
+	decoder := schema.NewDecoder()
 	t.Run("AddRoom", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
@@ -36,19 +38,24 @@ func TestRoomHandler_AddRoom(t *testing.T) {
 		roomIDTest := roomModel.RoomID{RoomID: 1}
 		mockRoomUseCase := room_mock.NewMockUsecase(ctrl)
 
+		var encoder = schema.NewEncoder()
+		form := url.Values{}
+		err := encoder.Encode(testRoomAdd, form)
+		assert.NoError(t, err)
+
 		mockRoomUseCase.EXPECT().
 			AddRoom(testRoomAdd).
 			Return(roomIDTest, nil)
 
-		body, err := easyjson.Marshal(testRoomAdd)
+		req, err := http.NewRequest("GET", "rooms/create", nil)
 		assert.NoError(t, err)
-		req, err := http.NewRequest("GET", "rooms/create", bytes.NewBuffer(body))
-		assert.NoError(t, err)
+		req.PostForm = form
 
 		rec := httptest.NewRecorder()
 		handler := RoomHandler{
 			roomUsecase: mockRoomUseCase,
 			log:         logger.NewLogger(os.Stdout),
+			decoder:     decoder,
 		}
 
 		handler.AddRoom(rec, req)
@@ -74,19 +81,24 @@ func TestRoomHandler_AddRoom(t *testing.T) {
 		roomIDTest := roomModel.RoomID{RoomID: 1}
 		mockRoomUseCase := room_mock.NewMockUsecase(ctrl)
 
+		var encoder = schema.NewEncoder()
+		form := url.Values{}
+		err := encoder.Encode(testRoomAdd, form)
+		assert.NoError(t, err)
+
 		mockRoomUseCase.EXPECT().
 			AddRoom(testRoomAdd).
 			Return(roomIDTest, customError.NewCustomError(errors.New(""), serverError.ServerInternalError, 1))
 
-		body, err := easyjson.Marshal(testRoomAdd)
+		req, err := http.NewRequest("GET", "rooms/create", nil)
 		assert.NoError(t, err)
-		req, err := http.NewRequest("GET", "rooms/create", bytes.NewBuffer(body))
-		assert.NoError(t, err)
+		req.PostForm = form
 
 		rec := httptest.NewRecorder()
 		handler := RoomHandler{
 			roomUsecase: mockRoomUseCase,
 			log:         logger.NewLogger(os.Stdout),
+			decoder:     decoder,
 		}
 
 		handler.AddRoom(rec, req)
@@ -115,6 +127,7 @@ func TestRoomHandler_AddRoom(t *testing.T) {
 		handler := RoomHandler{
 			roomUsecase: mockRoomUseCase,
 			log:         logger.NewLogger(os.Stdout),
+			decoder:     decoder,
 		}
 
 		handler.AddRoom(rec, req)
