@@ -25,7 +25,7 @@ require (
 	github.com/spf13/viper v1.7.1
 	github.com/stretchr/testify v1.6.1
 	github.com/swaggo/gin-swagger v1.3.0 // indirect
-	github.com/swaggo/http-swagger v1.0.0 // indirect
+	github.com/swaggo/http-swagger v1.0.0
 	go.mongodb.org/mongo-driver v1.3.5 // indirect
 	gopkg.in/ini.v1 v1.57.0 // indirect
 	gopkg.in/validator.v2 v2.0.0-20200605151824-2b28d334fa05
