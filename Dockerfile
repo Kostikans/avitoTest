@@ -10,3 +10,4 @@ COPY --from=avito_service /go/src/avito /app
 RUN chmod -R +x  .
 EXPOSE 9000/tcp
 ENTRYPOINT [ "/app/main" ]
+chen
