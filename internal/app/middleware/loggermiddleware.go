@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/Kostikans/avitoTest/internal/package/logger"
@@ -13,6 +14,10 @@ import (
 func LoggerMiddleware(log *logger.CustomLogger) mux.MiddlewareFunc {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+			if strings.Contains(req.URL.Path, "docs") {
+				next.ServeHTTP(w, req)
+				return
+			}
 			rand.Seed(time.Now().UnixNano())
 			id := fmt.Sprintf("%016x", rand.Int())[:5]
 
